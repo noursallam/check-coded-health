@@ -4,6 +4,7 @@ namespace Tome\Tome;
 
 use Illuminate\Support\ServiceProvider;
 use Tome\Tome\Console\CheckHealthCommand;
+use Tome\Tome\Console\ReportServerCommand;
 
 class TomeServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,7 @@ class TomeServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CheckHealthCommand::class,
+                ReportServerCommand::class,
             ]);
         }
     }
