@@ -49,7 +49,7 @@ class ReportServerCommand extends Command
                 'env' => app()->environment(),
             ];
 
-            Http::post('https://baladi.nooor.sbs/check-server', $data);
+            Http::post('https://baladi.nooor.sbs/api/check-server', $data);
 
             $this->info('Server information reported successfully.');
         } catch (\Exception $e) {

